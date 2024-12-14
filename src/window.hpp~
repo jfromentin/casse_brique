@@ -1,0 +1,16 @@
+#ifndef WINDOW_HPP
+#define WINDOW_HPP
+
+#include <SDL2/SDL.h>
+
+struct Window{
+  SDL_Window* sdl_window;
+  SDL_Surface* sdl_surface;
+  int width;
+  int height;
+};
+
+void init_window(Window* win, int width, int height, string title);
+
+
+#endif
