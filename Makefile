@@ -8,5 +8,5 @@ ALL	= $(EXE)
 obj/%.o: src/%.cpp src/%.hpp
 	$(CPP) $(CFLAGS) -c $< -o $@
 
-$(EXE): obj/window.o src/main.cpp
+$(EXE): obj/window.o obj/world.o obj/control.o src/main.cpp
 	$(CPP) $(CFLAGS) $^ -o $@ $(LIBS)
