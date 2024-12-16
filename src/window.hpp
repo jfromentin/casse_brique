@@ -17,11 +17,13 @@ struct Window{
   SDL_Color background;
   SDL_Color color;
   SDL_Color border_color = {127, 127, 127, 255};
+  SDL_Color empty_color = {0, 0, 0, 255};
   SDL_Color loose_color = {0, 0, 0, 255};
   SDL_Color block1_color = {255, 0, 0, 255};
   SDL_Color block2_color = {0, 255, 0, 255};
   SDL_Color block3_color = {0, 0, 255, 255};
   SDL_Color racket_color = {0, 255, 255, 255};
+  SDL_Color ball_color = {255, 255, 255, 255};
 };
 
 //! Initialize a window
@@ -33,6 +35,7 @@ void init_window(Window* window, int width, int height, string title);
 
 //! Set SDL_Color
 void set_sdl_color(SDL_Color* dst, int r, int g, int b, int a);
+void set_sdl_color(SDL_Color* dst, SDL_Color* src);
 
 //! Clear window
 void clear_window(Window* window);

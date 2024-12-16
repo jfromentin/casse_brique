@@ -58,10 +58,25 @@ void load_world(World* world, string filename) {
   file.close();
 
   // Set racket coordinate
-  world -> racket_left = width / 2 - 3;
-  world -> racket_right = width / 2 + 3;
+  world -> racket_x = width / 2;
+  world -> racket_width = 3;
   world -> racket_y = 1;
-  
+
+  // Set ball parameters
+  world -> ball_status = Lock;
+  world -> ball_x = world -> racket_x;
+  world -> ball_y = 2;
+}
+
+void move_ball(World* world) {
+  if (world -> ball_status == Lock) return;
+  int ball_nx = world -> ball_x + world -> ball_dx;
+  int ball_ny = world -> ball_y + world -> ball_dy;
+  Block b = get_block(world, ball_nx, ball_ny);
+  if (b == Empty) {
+    world -> ball_x = ball_nx;
+    world -> ball_y = ball_ny;
+  } 
 }
 
 void delete_world(World* world) {

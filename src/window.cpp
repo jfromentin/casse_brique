@@ -22,7 +22,7 @@ void init_window(Window* window, int width, int height, string title) {
   SDL_SetWindowTitle(window -> sdl_window, title.c_str());
 
   // Set backgrund color to white
-  set_sdl_color(&window -> background, 255, 255, 255, 255);
+  set_sdl_color(&window -> background, &window -> empty_color);
 
   // Set color to black
   set_sdl_color(&window -> color, 0, 0, 0, 0);
@@ -39,6 +39,13 @@ void set_sdl_color(SDL_Color* dst, int r, int g, int b, int a) {
   dst -> g = g;
   dst -> b = b;
   dst -> a = a;
+}
+
+void set_sdl_color(SDL_Color* dst, SDL_Color* src) {
+  dst -> r = src -> r;
+  dst -> g = src -> g;
+  dst -> b = src -> b;
+  dst -> a = src -> a;
 }
 
 void clear_window(Window* window) {
@@ -104,9 +111,10 @@ void display_world(Window* window, World* world) {
   }
 
   // Display the racket
-  int racket_width = world -> racket_right - world -> racket_left;
-  draw_fill_rectangle(window, world -> racket_left * xb, world -> racket_y * yb, racket_width * xb, yb, &window-> racket_color);
-  
+  draw_fill_rectangle(window, (world -> racket_x - world -> racket_width) * xb, world -> racket_y * yb, (2 * world -> racket_width + 1) * xb, yb, &window-> racket_color);
+
+  // Displat the ball
+  draw_fill_rectangle(window, world -> ball_x * xb, world -> ball_y * yb, xb, yb, &window -> ball_color);
   // Refresh
   refresh_window(window);
 }
