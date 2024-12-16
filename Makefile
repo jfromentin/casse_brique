@@ -1,7 +1,9 @@
 EXE 	= bin/brik
-LIBS	= -lSDL2
 CPP 	= g++
-CFLAGS	= -O3
+SDL_INC = `sdl2-config --cflags`
+SDL_LIB = `sdl2-config --libs` -lSDL2_ttf
+CFLAGS	= -g -O3 $(SDL_INC)
+LIBS	= $(SDL_LIB)
 
 ALL	= $(EXE)
 
@@ -10,3 +12,6 @@ obj/%.o: src/%.cpp src/%.hpp
 
 $(EXE): obj/window.o obj/world.o obj/control.o src/main.cpp
 	$(CPP) $(CFLAGS) $^ -o $@ $(LIBS)
+
+clean:
+	-$(RM) obj/*.o

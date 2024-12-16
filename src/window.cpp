@@ -10,11 +10,23 @@ void init_window(Window* window, int width, int height, string title) {
   // Set window geometry
   window -> width = width;
   window -> height = height;
-
   // Init SDL window and renderer
   int ret = SDL_CreateWindowAndRenderer(width, height, 0, &window -> sdl_window, &window -> sdl_renderer);
   if (ret < 0) {
     cerr << " Could not create SDL window: error " << SDL_GetError() << endl;
+    SDL_Quit();
+  }
+  
+  // Initialise SDL_TTF for TTF font rendering
+  if (TTF_Init() == -1){
+    cout << "Could not initialize SDL_TTF: error " << TTF_GetError() << endl;
+    SDL_Quit();
+  }
+  
+  // Spécifie la police
+  window -> sdl_font = TTF_OpenFont("VeraMono.ttf", 20);
+  if (window -> sdl_font == NULL) {
+    cout << "Could not load font: error " << TTF_GetError() << endl;
     SDL_Quit();
   }
 
@@ -70,8 +82,50 @@ void draw_fill_rectangle(Window* window, int x, int y, int w, int h, SDL_Color* 
   SDL_RenderFillRect(window -> sdl_renderer, &rectangle);
 }
 
+void draw_text(Window* window, string text, int x, int y) {
+  // Make a SDL Surface to draw the text
+  SDL_Surface* surface = TTF_RenderText_Shaded(window -> sdl_font, text.c_str(), window -> color, window -> background);
+
+  // If an error occured
+  if (surface == NULL) {
+    cout << "Could not init the SDL surface for TTF: " << TTF_GetError() << endl;
+    exit(0);
+  }
+
+  // Retrieve he width and the height of the surface
+  int h = surface -> h;
+  int w = surface -> w;
+  
+  // Make a SDL Texture from the Surface
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(window -> sdl_renderer, surface);
+
+  // Free the SDL surface
+  SDL_FreeSurface(surface);
+  
+  // Dispaly an error if we cannot make the texture
+  if (texture == NULL){
+    cout << "Could not init the SDL Texture for TTF: " << SDL_GetError() << endl;
+    SDL_Quit();
+  }
+
+  // Compute rendering rectangle of the texture
+  SDL_Rect dst;
+  dst.x = x;
+  dst.y = window -> height - y - h;
+  dst.w = w;
+  dst.h = h;
+
+  // Show the SDL texture
+  SDL_RenderCopy(window -> sdl_renderer, texture, NULL, &dst);
+
+  // Free the SDL texture
+  SDL_DestroyTexture(texture);
+}
+
+
 void display_world(Window* window, World* world) {
   // Clear everything
+  set_sdl_color(&window -> background, &window -> empty_color);
   clear_window(window);
 
   // Compute size of a block
@@ -90,8 +144,8 @@ void display_world(Window* window, World* world) {
 	case Border:
 	  c = &window -> border_color;
 	  break;
-	case Loose:
-	  c = &window -> loose_color;
+	case Lose:
+	  c = &window -> lose_color;
 	  break;
 	case Type1:
 	  c = &window -> block1_color;
@@ -113,8 +167,15 @@ void display_world(Window* window, World* world) {
   // Display the racket
   draw_fill_rectangle(window, (world -> racket_x - world -> racket_width) * xb, world -> racket_y * yb, (2 * world -> racket_width + 1) * xb, yb, &window-> racket_color);
 
-  // Displat the ball
+  // Display the ball
   draw_fill_rectangle(window, world -> ball_x * xb, world -> ball_y * yb, xb, yb, &window -> ball_color);
+
+  // Display score
+  set_sdl_color(&window -> color, 255, 255, 255, 255);
+  set_sdl_color(&window -> background, &window -> border_color);
+  draw_text(window, "Score : "  + to_string(world -> score) + " / " + to_string(world -> nb_blocks) , 5, window -> height - 25) ;
+
+  
   // Refresh
   refresh_window(window);
 }

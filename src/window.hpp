@@ -2,6 +2,8 @@
 #define WINDOW_HPP
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h> 
+
 #include <iostream>
 
 #include "world.hpp"
@@ -11,14 +13,15 @@ using namespace std;
 struct Window{
   SDL_Window* sdl_window;
   SDL_Renderer* sdl_renderer;
-  SDL_Surface* sdl_surface;
+  //SDL_Surface* sdl_surface;
+  TTF_Font* sdl_font;
   int width;
   int height;
   SDL_Color background;
   SDL_Color color;
   SDL_Color border_color = {127, 127, 127, 255};
   SDL_Color empty_color = {0, 0, 0, 255};
-  SDL_Color loose_color = {0, 0, 0, 255};
+  SDL_Color lose_color = {0, 0, 0, 255};
   SDL_Color block1_color = {255, 0, 0, 255};
   SDL_Color block2_color = {0, 255, 0, 255};
   SDL_Color block3_color = {0, 0, 255, 255};
@@ -46,6 +49,12 @@ void clear_window(Window* window);
 //! \param w width of the rectangle
 //! \param h height of the rectangle
 void draw_fill_rectangle(Window* window, int x, int y, int w, int h);
+
+//! Draw a text usinf the current font
+//! \param text the text to draw
+//! \param x x-coordinate of bottom left corner to draw the text
+//! \param y y-ccordinate of bottom left corner to draw the text
+void draw_text(Window* window, string text, int x, int y);
 
 //! Display the world
 void display_world(Window* window, World* world);

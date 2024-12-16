@@ -42,13 +42,11 @@ void move_racket(World* world, int dir) {
 void ball_action(World* world) {
   if (world -> ball_status == Lock) {
     world -> ball_dy = 1;
-    int ratio = (world -> racket_x - world -> width / 2) / (world -> width / 4);
-    cout << ratio << endl;
-    return;
-    if (world -> racket_x > world -> width / 2) {
+    int pos = world -> racket_x - world -> width / 2;
+    if (pos > 0) {
       world -> ball_dx = -1;
     }
-    else if (world -> racket_x < world -> width / 2) {
+    else if (pos < 0) {
       world -> ball_dx = 1;
     }
     else {

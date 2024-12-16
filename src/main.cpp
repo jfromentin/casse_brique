@@ -9,7 +9,7 @@ int main(int argc, char* args[]) {
 
   // Init the world
   World world;
-  load_world(&world, "bin/data/world1.dat");
+  load_world(&world, "data/world1.dat");
 
   // The main loop
   bool quit = false;
@@ -17,7 +17,7 @@ int main(int argc, char* args[]) {
   int time_for_move = 100;
   int time_before_move = time_for_move;
   
-  while(not quit) {
+  while(not quit and not world.fail) {
     // Move the ball
     if (time_before_move == 0) { 
       move_ball(&world);
@@ -35,7 +35,7 @@ int main(int argc, char* args[]) {
 
     
     // Wait for a delay before a new step of the loop
-    wait(5);
+    wait(1);
   }
   close_window(&window);
   delete_world(&world);
